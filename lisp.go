@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"lisp/src"
 	"os"
 	"path/filepath"
 	"strings"
@@ -51,5 +52,6 @@ func repl() {
 }
 
 func eval(code string, repl bool) interface{} {
-	return code
+	tokens := src.Scan(code, repl)
+	return tokens
 }
