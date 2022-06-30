@@ -45,18 +45,18 @@ func repl() {
 		if err != nil {
 			fmt.Println("> " + err.Error())
 		}
-		tokens := eval(code, true).([]src.Token)
-		fmt.Println(">", func(tokens []src.Token) []string {
-			var r []string
-			for _, t := range tokens {
-				r = append(r, t.ToStr())
-			}
-			return r
-		}(tokens))
+		fmt.Println(">", eval(code, true))
 	}
 }
 
 func eval(code string, repl bool) interface{} {
 	tokens := src.Scan(code+" ", repl)
-	return tokens
+	fmt.Println(func(tokens []src.Token) []string {
+		var r []string
+		for _, t := range tokens {
+			r = append(r, t.ToStr())
+		}
+		return r
+	}(tokens))
+	return nil
 }

@@ -49,6 +49,7 @@ func Scan(code string, repl bool) []Token {
 		x += len(content) + n
 	}
 
+	x = 0
 	for i < len(code) {
 		switch c := code[i]; c {
 		case '(', '[':
@@ -74,7 +75,7 @@ func Scan(code string, repl bool) []Token {
 			{
 			}
 		case '\n':
-			x = 0
+			x = -1
 			y += 1
 		default:
 			switch {
