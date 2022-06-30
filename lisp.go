@@ -9,30 +9,38 @@ import (
 	"path/filepath"
 )
 
+var (
+	usage = "usage: ./lisp [*.lisp]"
+)
+
 func main() {
 	args := len(os.Args)
 	if args == 1 {
 		repl()
 	} else if args == 2 {
+		if os.Args[1] == "--help" {
+			fmt.Println(usage)
+			os.Exit(1)
+		}
 		file := os.Args[1]
 		if _, err := os.OpenFile(file, os.O_RDONLY, 0755); err == nil {
 			if filepath.Ext(file) != ".lisp" {
-				fileErr(errors.New("its not *.lisp\n"))
+				fileErr(errors.New("its not *.lisp"))
 			}
 		} else {
-			fmt.Fprintf(os.Stderr, "cant read file\n"+err.Error())
+			fmt.Fprintf(os.Stderr, "cant read file\n%s\n", err.Error())
 		}
 		data, err := os.ReadFile(file)
 		fileErr(err)
 		eval(string(data), false)
 	} else {
-		fmt.Fprintf(os.Stderr, "usage: ./lisp [*.lisp]\n")
+		fmt.Fprintf(os.Stderr, "%s\n", usage)
 	}
 }
 
 func fileErr(err error) {
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "cant read file\n"+err.Error())
+		fmt.Fprintf(os.Stderr, "cant read file:\n%s\n", err.Error())
 		os.Exit(1)
 	}
 }
