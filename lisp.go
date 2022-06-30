@@ -7,7 +7,6 @@ import (
 	"lisp/src"
 	"os"
 	"path/filepath"
-	"strings"
 )
 
 func main() {
@@ -46,12 +45,18 @@ func repl() {
 		if err != nil {
 			fmt.Println("> " + err.Error())
 		}
-		code = strings.Replace(code, "\n", "", -1)
-		fmt.Println(">", eval(code, true))
+		tokens := eval(code, true).([]src.Token)
+		fmt.Println(">", func(tokens []src.Token) []string {
+			var r []string
+			for _, t := range tokens {
+				r = append(r, t.ToStr())
+			}
+			return r
+		}(tokens))
 	}
 }
 
 func eval(code string, repl bool) interface{} {
-	tokens := src.Scan(code, repl)
+	tokens := src.Scan(code+" ", repl)
 	return tokens
 }

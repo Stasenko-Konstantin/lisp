@@ -1,2 +1,41 @@
 .idea
 lisp
+
+for n, c := range code {
+		switch c {
+		case '"':
+			str := ""
+			i := 0
+			for n2, c := range code[n+1:] {
+				switch c {
+				case '"':
+					goto cont
+				case '\n':
+					lexerErr(errors.New("dangling \""), repl)
+					if repl {
+						code = code[n+n2:]
+						goto loop
+					}
+				default:
+					str += string(c)
+				}
+				i = n2
+			}
+		cont:
+			fmt.Println(code[n+i+3:])
+			code = code[n+i+3:]
+			tokens = append(tokens, Token{
+				Type:    STRING,
+				Content: str,
+				X:       x,
+				Y:       y,
+			})
+			x += len(str) + 2
+		case '\r' | '\t' | ' ':
+			{
+			}
+		case '\n':
+			x = 0
+			y += 1
+		}
+	}
