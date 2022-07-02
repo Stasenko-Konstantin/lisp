@@ -20,7 +20,7 @@ func main() {
 	} else if args == 2 {
 		if os.Args[1] == "--help" {
 			fmt.Println(usage)
-			os.Exit(1)
+			os.Exit(0)
 		}
 		file := os.Args[1]
 		if _, err := os.OpenFile(file, os.O_RDONLY, 0755); err == nil {
@@ -48,6 +48,7 @@ func fileErr(err error) {
 func repl() {
 	reader := bufio.NewReader(os.Stdin)
 	for {
+		src.ResetErrors()
 		fmt.Print("< ")
 		code, err := reader.ReadString('\n')
 		if err != nil {
@@ -58,7 +59,8 @@ func repl() {
 }
 
 func eval(code string, repl bool) interface{} {
-	tokens := src.Scan(code+" ", repl)
+	src.Repl = repl
+	tokens := src.Scan(code + " ")
 	fmt.Println(func(tokens []src.Token) []string {
 		var r []string
 		for _, t := range tokens {
@@ -66,5 +68,10 @@ func eval(code string, repl bool) interface{} {
 		}
 		return r
 	}(tokens))
+	objects := src.Parse(tokens)
+	fmt.Println(objects)
+	if src.InterpretationFault {
+		src.PrintErrors()
+	}
 	return nil
 }

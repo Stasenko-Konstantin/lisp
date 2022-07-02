@@ -9,34 +9,34 @@ import (
 func TestScan(t *testing.T) {
 	assert.Equal(t, []Token{
 		{
-			Type:    NUM,
+			Type:    NUM_T,
 			Content: "123",
-			X:       0,
-			Y:       0,
+			x:       0,
+			y:       0,
 		},
 		{
-			Type:    NAME,
+			Type:    NAME_T,
 			Content: "hello",
-			X:       5,
-			Y:       0,
+			x:       5,
+			y:       0,
 		},
 		{
-			Type:    LPAREN,
+			Type:    LPAREN_T,
 			Content: "(",
-			X:       12,
-			Y:       0,
+			x:       12,
+			y:       0,
 		},
 		{
-			Type:    RPAREN,
+			Type:    RPAREN_T,
 			Content: ")",
-			X:       13,
-			Y:       0,
+			x:       13,
+			y:       0,
 		},
 		{
-			Type:    STRING,
+			Type:    STRING_T,
 			Content: "hello",
-			X:       0,
-			Y:       1,
+			x:       0,
+			y:       1,
 		},
-	}, Scan("123 hello (]\n\"hello\"", false))
+	}, Scan("123 hello (]\n\"hello\""))
 }
