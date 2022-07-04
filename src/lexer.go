@@ -17,6 +17,8 @@ func Scan(code string) []Token {
 		tokens  []Token
 		symbols = "\\|/?.><!#@`^~%&*-_+=;"
 		i       int
+		x       = 0
+		y       = 0
 	)
 
 	take := func(token, n, n2 int, p, pErr func(c rune) bool, err error) {

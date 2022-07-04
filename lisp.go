@@ -61,15 +61,15 @@ func repl() {
 func eval(code string, repl bool) interface{} {
 	src.Repl = repl
 	tokens := src.Scan(code + " ")
-	fmt.Println(func(tokens []src.Token) []string {
-		var r []string
-		for _, t := range tokens {
-			r = append(r, t.ToStr())
-		}
-		return r
-	}(tokens))
+	//fmt.Println(func(tokens []src.Token) []string {
+	//	var r []string
+	//	for _, t := range tokens {
+	//		r = append(r, t.ToStr())
+	//	}
+	//	return r
+	//}(tokens))
 	objects := src.Parse(tokens)
-	fmt.Println(objects)
+	fmt.Println(objects.ToStr())
 	if src.InterpretationFault {
 		src.PrintErrors()
 	}
