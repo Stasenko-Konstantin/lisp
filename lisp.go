@@ -69,7 +69,12 @@ func eval(code string, repl bool) interface{} {
 	//	return r
 	//}(tokens))
 	objects := src.Parse(tokens)
-	fmt.Println(objects.ToStr())
+	defs := make(map[string]*src.Object)
+	env := src.Env{
+		Parent: nil,
+		Defs:   defs,
+	}
+	fmt.Println(src.Eval(objects, env))
 	if src.InterpretationFault {
 		src.PrintErrors()
 	}

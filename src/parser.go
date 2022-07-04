@@ -46,7 +46,7 @@ func Parse(tokens []Token) *Object {
 				y:       t.y,
 			})
 		case LPAREN_T:
-			subList := Parse(tokens[n:])
+			subList := Parse(tokens[n+1:])
 			program = append(program, *subList)
 		case RPAREN_T:
 			return &Object{

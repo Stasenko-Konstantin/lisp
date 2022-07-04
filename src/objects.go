@@ -43,3 +43,8 @@ func (t Object) ToStr() string {
 	str += "y = " + strconv.Itoa(t.y) + "; "
 	return str
 }
+
+type lambda struct {
+	params []string
+	body   interface{}
+}
