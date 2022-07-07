@@ -8,11 +8,14 @@ import (
 
 type Program []Object
 
-func Parse(tokens []Token) *Object {
+func Parse(tokens []Token) (*Object, int) {
 	if len(tokens) == 0 {
-		return nil
+		return nil, 0
 	}
-	var program Program
+	var (
+		program Program
+		skip    = -1
+	)
 	if !tokens[0].compare(Token{
 		Type:    LPAREN_T,
 		Content: "(",
@@ -22,6 +25,9 @@ func Parse(tokens []Token) *Object {
 		parserErr(tokens[0], errors.New("should be ("))
 	}
 	for n, t := range tokens[1:] {
+		if n <= skip {
+			continue
+		}
 		switch t.Type {
 		case NUM_T:
 			content, _ := strconv.Atoi(t.Content)
@@ -46,7 +52,8 @@ func Parse(tokens []Token) *Object {
 				y:       t.y,
 			})
 		case LPAREN_T:
-			subList := Parse(tokens[n+1:])
+			subList, nd := Parse(tokens[n+1:])
+			skip = nd + n + 1
 			program = append(program, *subList)
 		case RPAREN_T:
 			return &Object{
@@ -54,10 +61,15 @@ func Parse(tokens []Token) *Object {
 				Content: program,
 				x:       0,
 				y:       0,
-			}
+			}, n
 		}
 	}
-	return nil
+	return &Object{
+		Type:    LIST_O,
+		Content: program,
+		x:       0,
+		y:       0,
+	}, 0
 }
 
 func parserErr(token Token, err error) {

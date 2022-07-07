@@ -32,7 +32,7 @@ func main() {
 		}
 		data, err := os.ReadFile(file)
 		fileErr(err)
-		eval(string(data), false)
+		eval("("+string(data)+")", false)
 	} else {
 		fmt.Fprintf(os.Stderr, "%s\n", usage)
 	}
@@ -68,7 +68,7 @@ func eval(code string, repl bool) interface{} {
 	//	}
 	//	return r
 	//}(tokens))
-	objects := src.Parse(tokens)
+	objects, _ := src.Parse(tokens)
 	defs := make(map[string]*src.Object)
 	env := src.Env{
 		Parent: nil,
