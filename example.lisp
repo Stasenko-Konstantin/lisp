@@ -1,4 +1,4 @@
 (define fun
-	(lambda (n) (+ n 1)))
+	(lambda (n) (println n)))
 
-(println (fun 1))
+(fun 1)

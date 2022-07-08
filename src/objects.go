@@ -13,6 +13,7 @@ const (
 	STRING_O
 	LAMBDA_O
 	LIST_O
+	BUILTIN_O
 )
 
 type Object struct {
@@ -37,6 +38,8 @@ func (t Object) ToStr() string {
 		str += "type = LAMBDA_O, "
 	case LIST_O:
 		str += "type = LIST_O, "
+	case BUILTIN_O:
+		str += "type = BUILTIN_O"
 	}
 	str += fmt.Sprintf("content = %v, ", t.Content)
 	str += "x = " + strconv.Itoa(t.x) + ", "
@@ -47,4 +50,21 @@ func (t Object) ToStr() string {
 type lambda struct {
 	params []string
 	body   interface{}
+}
+
+func MakeBuiltins() map[string]*Object {
+	defs := make(map[string]*Object)
+	defs["println"] = &Object{
+		Type: BUILTIN_O,
+		Content: func(obj *Object, env Env) {
+			content := obj.Content.(Program)
+			for _, o := range content {
+				fmt.Print(o.Content, " ")
+			}
+			fmt.Println()
+		},
+		x: 0,
+		y: 0,
+	}
+	return defs
 }

@@ -10,6 +10,17 @@ type Env struct {
 	Defs   map[string]*Object
 }
 
+func (env Env) find(name string) *Object {
+	if _, ok := env.Defs[name]; ok {
+		return env.Defs[name]
+	} else if env.Parent == nil {
+		evalErr(nil, errors.New("not found builtin: "+name))
+		return makeVoid(nil)
+	} else {
+		return env.Parent.find(name)
+	}
+}
+
 func Eval(object *Object, env Env) *Object {
 	switch object.Type {
 	case LAMBDA_O:
@@ -22,6 +33,8 @@ func Eval(object *Object, env Env) *Object {
 		return evalName(object, env)
 	case LIST_O:
 		return evalList(object, env)
+	case BUILTIN_O:
+		return evalBuiltin(object, env)
 	default:
 		return object // NUM_O, STRING_O and VOID_O
 	}
@@ -159,9 +172,10 @@ func evalFunctionCall(list *Object, env Env, name string) *Object {
 				x:       list.x,
 				y:       list.y,
 			}, newEnv)
+		case BUILTIN_O:
+			evalBuiltin(list, env)
 		default:
 			evalErr(list, errors.New("not a lambda { "+name+" }"))
-			return makeVoid(list)
 		}
 	} else {
 		if env.Parent == nil {
@@ -173,8 +187,25 @@ func evalFunctionCall(list *Object, env Env, name string) *Object {
 	return makeVoid(list)
 }
 
-func makeVoid(list *Object) *Object {
+func evalBuiltin(list *Object, env Env) *Object {
+	content := list.Content.(Program)
+	f := env.find(content[0].Content.(string)).Content.(func(*Object, Env))
+	f(&Object{
+		Type:    LIST_O,
+		Content: content[1:],
+		x:       0,
+		y:       0,
+	}, env)
 	return makeVoid(list)
+}
+
+func makeVoid(list *Object) *Object {
+	return &Object{
+		Type:    VOID_O,
+		Content: list,
+		x:       0,
+		y:       0,
+	}
 }
 
 func evalErr(object *Object, err error) {
