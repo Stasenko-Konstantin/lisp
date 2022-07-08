@@ -13,8 +13,15 @@ var (
 	usage = "usage: ./lisp [*.lisp]"
 )
 
+var env src.Env
+
 func main() {
 	args := len(os.Args)
+	defs := src.MakeBuiltins()
+	env = src.Env{
+		Parent: nil,
+		Defs:   defs,
+	}
 	if args == 1 {
 		repl()
 	} else if args == 2 {
@@ -69,14 +76,9 @@ func eval(code string, repl bool) interface{} {
 	//	return r
 	//}(tokens))
 	objects, _ := src.Parse(tokens)
-	defs := src.MakeBuiltins()
-	env := src.Env{
-		Parent: nil,
-		Defs:   defs,
-	}
-	src.Eval(objects, env)
+	obj := src.Eval(objects, env)
 	if src.InterpretationFault {
 		src.PrintErrors()
 	}
-	return nil
+	return obj.GetContent(false)
 }

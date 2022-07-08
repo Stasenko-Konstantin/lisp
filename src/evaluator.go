@@ -153,50 +153,48 @@ func evalLambda(list *Object) *Object {
 
 func evalFunctionCall(list *Object, env Env, name string) *Object {
 	content := list.Content.(Program)
-	if v, ok := env.Defs[name]; ok {
-		switch v.Type {
-		case LAMBDA_O:
-			defs := make(map[string]*Object)
-			lambda := v.Content.(lambda)
-			newEnv := Env{
-				Parent: &env,
-				Defs:   defs,
-			}
-			for i, p := range lambda.params {
-				val := Eval(&content[i+1], env)
-				newEnv.Defs[p] = val
-			}
-			return Eval(&Object{
-				Type:    LIST_O,
-				Content: lambda.body,
-				x:       list.x,
-				y:       list.y,
-			}, newEnv)
-		case BUILTIN_O:
-			evalBuiltin(list, env)
-		default:
-			evalErr(list, errors.New("not a lambda { "+name+" }"))
+	v := env.find(name)
+	switch v.Type {
+	case LAMBDA_O:
+		defs := make(map[string]*Object)
+		lambda := v.Content.(lambda)
+		newEnv := Env{
+			Parent: &env,
+			Defs:   defs,
 		}
-	} else {
-		if env.Parent == nil {
-			evalErr(list, errors.New("not found in this scope { "+name+" }"))
-		} else {
-			return evalFunctionCall(list, *env.Parent, name)
+		for i, p := range lambda.params {
+			val := Eval(&content[i+1], env)
+			newEnv.Defs[p] = val
 		}
+		return Eval(&Object{
+			Type:    LIST_O,
+			Content: lambda.body,
+			x:       list.x,
+			y:       list.y,
+		}, newEnv)
+	case BUILTIN_O:
+		evalBuiltin(list, env)
+	default:
+		evalErr(list, errors.New("not a lambda { "+name+" }"))
 	}
 	return makeVoid(list)
 }
 
 func evalBuiltin(list *Object, env Env) *Object {
 	content := list.Content.(Program)
-	f := env.find(content[0].Content.(string)).Content.(func(*Object, Env))
-	f(&Object{
+	f := env.find(content[0].Content.(string)).Content.(func(*Object, Env) *Object)
+	for i, o := range content {
+		switch o.Type {
+		case NAME_O:
+			content[i].Content = env.find(o.Content.(string))
+		}
+	}
+	return f(&Object{
 		Type:    LIST_O,
 		Content: content[1:],
 		x:       0,
 		y:       0,
 	}, env)
-	return makeVoid(list)
 }
 
 func makeVoid(list *Object) *Object {

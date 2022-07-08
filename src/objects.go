@@ -23,6 +23,35 @@ type Object struct {
 	y       int
 }
 
+func (t *Object) GetContent(list bool) string {
+	switch t.Content.(type) {
+	case Program:
+		r := ""
+		for _, o := range t.Content.(Program) {
+			r += o.GetContent(true) + " "
+		}
+		if list {
+			return "( " + r + ")"
+		}
+		return r
+	case *Object:
+		switch t.Content.(*Object).Type {
+		case LIST_O:
+			r := "( "
+			for _, o := range t.Content.(*Object).Content.(Program) {
+				r += o.GetContent(true) + " "
+			}
+			return r + ")"
+		}
+		return t.Content.(*Object).GetContent(false)
+	case int:
+		return strconv.Itoa(t.Content.(int))
+	case string:
+		return t.Content.(string)
+	}
+	return t.ToStr()
+}
+
 func (t Object) ToStr() string {
 	str := ""
 	switch t.Type {
@@ -39,7 +68,7 @@ func (t Object) ToStr() string {
 	case LIST_O:
 		str += "type = LIST_O, "
 	case BUILTIN_O:
-		str += "type = BUILTIN_O"
+		str += "type = BUILTIN_O, "
 	}
 	str += fmt.Sprintf("content = %v, ", t.Content)
 	str += "x = " + strconv.Itoa(t.x) + ", "
@@ -56,12 +85,9 @@ func MakeBuiltins() map[string]*Object {
 	defs := make(map[string]*Object)
 	defs["println"] = &Object{
 		Type: BUILTIN_O,
-		Content: func(obj *Object, env Env) {
-			content := obj.Content.(Program)
-			for _, o := range content {
-				fmt.Print(o.Content, " ")
-			}
-			fmt.Println()
+		Content: func(obj *Object, env Env) *Object {
+			fmt.Println(obj.GetContent(false))
+			return makeVoid(obj)
 		},
 		x: 0,
 		y: 0,
