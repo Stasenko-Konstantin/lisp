@@ -86,8 +86,17 @@ func MakeBuiltins() map[string]*Object {
 	defs["println"] = &Object{
 		Type: BUILTIN_O,
 		Content: func(obj *Object, env Env) *Object {
-			fmt.Println(obj.GetContent(false))
+			fmt.Println(Eval(obj, env).GetContent(false))
 			return makeVoid(obj)
+		},
+		x: 0,
+		y: 0,
+	}
+	defs["^"] = &Object{
+		Type: BUILTIN_O,
+		Content: func(obj *Object, env Env) *Object {
+			r := Eval(obj, env)
+			return r
 		},
 		x: 0,
 		y: 0,

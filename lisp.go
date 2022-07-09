@@ -68,13 +68,6 @@ func repl() {
 func eval(code string, repl bool) interface{} {
 	src.Repl = repl
 	tokens := src.Scan(code + " ")
-	//fmt.Println(func(tokens []src.Token) []string {
-	//	var r []string
-	//	for _, t := range tokens {
-	//		r = append(r, t.ToStr())
-	//	}
-	//	return r
-	//}(tokens))
 	objects, _ := src.Parse(tokens)
 	obj := src.Eval(objects, env)
 	if src.InterpretationFault {

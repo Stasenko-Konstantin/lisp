@@ -14,7 +14,7 @@ func (env Env) find(name string) *Object {
 	if _, ok := env.Defs[name]; ok {
 		return env.Defs[name]
 	} else if env.Parent == nil {
-		evalErr(nil, errors.New("not found builtin: "+name))
+		evalErr(makeVoid(nil), errors.New("not found: "+name))
 		return makeVoid(nil)
 	} else {
 		return env.Parent.find(name)
@@ -173,7 +173,7 @@ func evalFunctionCall(list *Object, env Env, name string) *Object {
 			y:       list.y,
 		}, newEnv)
 	case BUILTIN_O:
-		evalBuiltin(list, env)
+		return evalBuiltin(list, env)
 	default:
 		evalErr(list, errors.New("not a lambda { "+name+" }"))
 	}
@@ -186,15 +186,16 @@ func evalBuiltin(list *Object, env Env) *Object {
 	for i, o := range content {
 		switch o.Type {
 		case NAME_O:
-			content[i].Content = env.find(o.Content.(string))
+			content[i] = *env.find(o.Content.(string))
 		}
 	}
-	return f(&Object{
+	r := f(&Object{
 		Type:    LIST_O,
 		Content: content[1:],
 		x:       0,
 		y:       0,
 	}, env)
+	return r
 }
 
 func makeVoid(list *Object) *Object {
