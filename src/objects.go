@@ -3,9 +3,10 @@ package src
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
-// objects
+// Type from Object struct
 const (
 	VOID_O = iota
 	NUM_O
@@ -23,6 +24,7 @@ type Object struct {
 	y       int
 }
 
+// GetContent - pretty printer for evaluated objects
 func (t *Object) GetContent(list bool) string {
 	switch t.Content.(type) {
 	case Program:
@@ -35,6 +37,9 @@ func (t *Object) GetContent(list bool) string {
 		}
 		return r
 	case *Object:
+		if t.Content.(*Object) == nil {
+			return ""
+		}
 		switch t.Content.(*Object).Type {
 		case LIST_O:
 			r := "( "
@@ -49,11 +54,12 @@ func (t *Object) GetContent(list bool) string {
 	case string:
 		return t.Content.(string)
 	}
-	return t.ToStr()
+	return t.ToStr("")
 }
 
-func (t Object) ToStr() string {
-	str := ""
+// ToStr - pretty printer for ast
+func (t Object) ToStr(tab string) string {
+	str := tab
 	switch t.Type {
 	case VOID_O:
 		str += "type = VOID_O, "
@@ -70,10 +76,29 @@ func (t Object) ToStr() string {
 	case BUILTIN_O:
 		str += "type = BUILTIN_O, "
 	}
-	str += fmt.Sprintf("content = %v, ", t.Content)
+	var content interface{}
+	switch t.Content.(type) {
+	case string, int:
+		content = t.Content
+	case Program:
+		var r string
+		for _, o := range t.Content.(Program) {
+			r += o.ToStr(tab + "\t")
+		}
+		content = r
+	default:
+		content = t.Content.(*Object).ToStr("\t")
+	}
+	str += fmt.Sprintf("content = %v, ", content)
 	str += "x = " + strconv.Itoa(t.x) + ", "
-	str += "y = " + strconv.Itoa(t.y) + "; "
-	return str
+	str += "y = " + strconv.Itoa(t.y) + ";\n"
+	var r string
+	for _, l := range strings.Split(str, "\n") {
+		if l != "" {
+			r += "\n" + l
+		}
+	}
+	return r
 }
 
 type lambda struct {
@@ -87,12 +112,12 @@ func MakeBuiltins() map[string]*Object {
 		Type: BUILTIN_O,
 		Content: func(obj *Object, env Env) *Object {
 			fmt.Println(Eval(obj, env).GetContent(false))
-			return makeVoid(obj)
+			return MakeVoid(obj)
 		},
 		x: 0,
 		y: 0,
 	}
-	defs["^"] = &Object{
+	defs["^"] = &Object{ // return
 		Type: BUILTIN_O,
 		Content: func(obj *Object, env Env) *Object {
 			r := Eval(obj, env)

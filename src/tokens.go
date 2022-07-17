@@ -2,7 +2,7 @@ package src
 
 import "strconv"
 
-// tokens
+// Type in Token struct
 const (
 	NUM_T = iota
 	NAME_T
@@ -18,6 +18,7 @@ type Token struct {
 	y       int
 }
 
+// ToStr - pretty printer for tokens
 func (t Token) ToStr() string {
 	str := ""
 	switch t.Type {

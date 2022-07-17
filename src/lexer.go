@@ -72,6 +72,15 @@ func Scan(code string) []Token {
 				func(c rune) bool { return c == '"' },
 				func(c rune) bool { return c == '\n' },
 				errors.New("dangling \""))
+		case '-':
+			if code[i+1] == '-' {
+				for {
+					if code[i+1] == '\n' {
+						break
+					}
+					i++
+				}
+			}
 		case '\r', '\t', ' ':
 			{
 			}
@@ -82,7 +91,7 @@ func Scan(code string) []Token {
 			switch {
 			case isLetter(rune(c)) || strings.Contains(symbols, string(c)):
 				take(NAME_T, 0, 0,
-					func(c rune) bool { return !(isLetter(c) || strings.Contains(symbols, string(c))) },
+					func(c rune) bool { return !(isLetter(c) || strings.Contains(symbols, string(c)) || unicode.IsDigit(c)) },
 					func(c rune) bool { return false }, nil)
 			case unicode.IsDigit(rune(c)):
 				take(NUM_T, 0, 0,
@@ -99,5 +108,5 @@ func Scan(code string) []Token {
 }
 
 func lexerErr(err error) {
-	addErr(errors.New(fmt.Sprintf("lexer error: %v; x = %d, y = %d\n", err, x, y)))
+	AddErr(errors.New(fmt.Sprintf("lexer error: %v; x = %d, y = %d\n", err, x, y)))
 }

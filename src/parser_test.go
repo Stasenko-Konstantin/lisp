@@ -7,6 +7,7 @@ import (
 )
 
 func TestParse(t *testing.T) {
+	parse, _ := Parse(Scan("(+ 1 2)"))
 	assert.Equal(t, &Object{
 		Type: LIST_O,
 		Content: Program{
@@ -26,5 +27,5 @@ func TestParse(t *testing.T) {
 				x:       7,
 			},
 		},
-	}, Parse(Scan("(+ 1 2)")))
+	}, parse)
 }

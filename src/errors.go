@@ -11,7 +11,7 @@ var (
 	Repl                bool
 )
 
-func addErr(err error) {
+func AddErr(err error) {
 	InterpretationFault = true
 	Errors = append(Errors, err)
 }

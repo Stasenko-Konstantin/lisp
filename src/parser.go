@@ -8,7 +8,8 @@ import (
 
 type Program []Object
 
-func Parse(tokens []Token) (*Object, int) {
+// skipnt - skip some tokens count
+func Parse(tokens []Token) (o *Object, skipnt int) {
 	if len(tokens) == 0 {
 		return nil, 0
 	}
@@ -52,8 +53,8 @@ func Parse(tokens []Token) (*Object, int) {
 				y:       t.y,
 			})
 		case LPAREN_T:
-			subList, nd := Parse(tokens[n+1:])
-			skip = nd + n + 1
+			subList, skipnt := Parse(tokens[n+1:])
+			skip = skipnt + n + 1
 			program = append(program, *subList)
 		case RPAREN_T:
 			return &Object{
@@ -73,5 +74,5 @@ func Parse(tokens []Token) (*Object, int) {
 }
 
 func parserErr(token Token, err error) {
-	addErr(errors.New(fmt.Sprintf("parser error: %v\n\tcontent = %s, x = %d, y = %d\n", err, token.Content, token.x, token.y)))
+	AddErr(errors.New(fmt.Sprintf("parser error: %v\n\tcontent = %s, x = %d, y = %d\n", err, token.Content, token.x, token.y)))
 }
