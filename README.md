@@ -15,9 +15,9 @@ usage: ./lisp [*.scm] [arg] where arg:
 ./lisp
 <<< :h
 >>> :l, :load *.scm      -- evaluate file
->>> :h, :help    -- prints the help
->>> :p, :past    -- prints intermediate ast
->>> :q, :quit    -- program exit
+>>> :h, :help            -- prints the help
+>>> :p, :past            -- prints intermediate ast
+>>> :q, :quit            -- program exit
 <<< :p
 >>> OK
 <<< (println 1)
