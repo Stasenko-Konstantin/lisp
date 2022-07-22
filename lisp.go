@@ -40,7 +40,6 @@ func main() {
 	} else {
 		if strings.Contains(sargs, "--help") {
 			fmt.Println(usage)
-			os.Exit(0)
 		} else if strings.Contains(sargs, "--past") {
 			printAst = true
 		}
@@ -121,7 +120,7 @@ func repl() {
 }
 
 func eval(code string, needEval bool) interface{} {
-	tokens := src.Scan(code + " ")
+	tokens := src.Scan(code)
 	var objects *src.Object
 	if tokens == nil {
 		objects = src.MakeVoid(nil)

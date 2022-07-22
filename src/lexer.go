@@ -80,6 +80,10 @@ func Scan(code string) []Token {
 					}
 					i++
 				}
+			} else {
+				take(NAME_T, 0, 0,
+					func(c rune) bool { return !(isLetter(c) || strings.Contains(symbols, string(c)) || unicode.IsDigit(c)) },
+					func(c rune) bool { return false }, nil)
 			}
 		case '\r', '\t', ' ':
 			{
