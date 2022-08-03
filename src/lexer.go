@@ -50,7 +50,6 @@ func Scan(code string) []Token {
 		x += len(content) + n
 	}
 
-	x = 0
 	for i < len(code) {
 		switch c := code[i]; c {
 		case '(', '[':
