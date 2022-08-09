@@ -121,6 +121,9 @@ func repl() {
 
 func eval(code string, needEval bool) interface{} {
 	tokens := src.Scan(code)
+	for _, t := range tokens {
+		fmt.Println(t.ToStr() + "\n")
+	}
 	var objects *src.Object
 	if tokens == nil {
 		objects = src.MakeVoid(nil)

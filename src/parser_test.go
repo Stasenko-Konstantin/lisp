@@ -19,12 +19,12 @@ func TestParse(t *testing.T) {
 			{
 				Type:    NUM_O,
 				Content: interface{}(1),
-				x:       4,
+				x:       3,
 			},
 			{
 				Type:    NUM_O,
 				Content: interface{}(2),
-				x:       7,
+				x:       5,
 			},
 		},
 	}, parse)

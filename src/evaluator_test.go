@@ -24,7 +24,7 @@ func TestEval(t *testing.T) {
 			Object{
 				Type:    NUM_O,
 				Content: 2,
-				x:       4,
+				x:       3,
 				y:       0,
 			},
 		},

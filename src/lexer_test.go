@@ -17,19 +17,19 @@ func TestScan(t *testing.T) {
 		{
 			Type:    NAME_T,
 			Content: "hello",
-			x:       5,
+			x:       4,
 			y:       0,
 		},
 		{
 			Type:    LPAREN_T,
 			Content: "(",
-			x:       12,
+			x:       10,
 			y:       0,
 		},
 		{
 			Type:    RPAREN_T,
 			Content: ")",
-			x:       13,
+			x:       11,
 			y:       0,
 		},
 		{

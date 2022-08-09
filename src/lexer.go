@@ -47,7 +47,7 @@ func Scan(code string) []Token {
 			x:       x,
 			y:       y,
 		})
-		x += len(content) + n
+		x += len(content) + n - 1
 	}
 
 	for i < len(code) {
