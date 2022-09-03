@@ -1,6 +1,6 @@
 # lisp
 desing is very human. very easy to use  
-simple lisp in ± 800 lines of code (including some tests)
+simple lisp from scratch in ± 800 lines of code (including some tests)
 ```haskell
 git clone https://github.com/Stasenko-Konstantin/lisp
 cd lisp

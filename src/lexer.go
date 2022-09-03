@@ -26,7 +26,7 @@ func Scan(code string) []Token {
 		for n, c := range code[i+n2:] {
 			switch {
 			case p(c):
-				goto cont
+				goto cont // break dont work here 🤔
 			case pErr(c):
 				lexerErr(err)
 				if Repl {
