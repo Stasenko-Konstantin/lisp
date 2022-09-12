@@ -106,6 +106,8 @@ func repl() {
 					err := evalFile(f)
 					if err != nil {
 						fmt.Println(strings.TrimSuffix(out, " "), eval("", false))
+					} else {
+						fmt.Println(out + "OK")
 					}
 					break
 				}
