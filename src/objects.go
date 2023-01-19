@@ -6,9 +6,11 @@ import (
 	"strings"
 )
 
+type ObjectType int
+
 // Type from Object struct
 const (
-	VOID_O = iota
+	VOID_O ObjectType = iota
 	NUM_O
 	NAME_O
 	STRING_O
@@ -18,7 +20,7 @@ const (
 )
 
 type Object struct {
-	Type    int
+	Type    ObjectType
 	Content interface{}
 	x       int
 	y       int
@@ -114,8 +116,6 @@ func MakeBuiltins() map[string]*Object {
 			fmt.Println(Eval(obj, env).GetContent(false))
 			return MakeVoid(obj)
 		},
-		x: 0,
-		y: 0,
 	}
 	defs["print"] = &Object{
 		Type: BUILTIN_O,
@@ -123,8 +123,6 @@ func MakeBuiltins() map[string]*Object {
 			fmt.Print(Eval(obj, env).GetContent(false))
 			return MakeVoid(obj)
 		},
-		x: 0,
-		y: 0,
 	}
 	defs["^"] = &Object{ // return
 		Type: BUILTIN_O,
@@ -132,8 +130,6 @@ func MakeBuiltins() map[string]*Object {
 			r := Eval(obj, env)
 			return r
 		},
-		x: 0,
-		y: 0,
 	}
 	return defs
 }

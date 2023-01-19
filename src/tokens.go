@@ -2,9 +2,11 @@ package src
 
 import "strconv"
 
+type TokenType int
+
 // Type in Token struct
 const (
-	NUM_T = iota
+	NUM_T TokenType = iota
 	NAME_T
 	STRING_T
 	LPAREN_T
@@ -12,7 +14,7 @@ const (
 )
 
 type Token struct {
-	Type    int
+	Type    TokenType
 	Content string
 	x       int
 	y       int

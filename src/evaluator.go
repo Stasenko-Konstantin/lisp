@@ -194,8 +194,6 @@ func evalBuiltin(obj *Object, env Env) *Object {
 		&Object{
 			Type:    LIST_O,
 			Content: content[1:],
-			x:       0,
-			y:       0,
 		}, env)
 }
 
@@ -203,8 +201,6 @@ func MakeVoid(obj *Object) *Object {
 	return &Object{
 		Type:    VOID_O,
 		Content: obj,
-		x:       0,
-		y:       0,
 	}
 }
 

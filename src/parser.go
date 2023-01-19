@@ -8,68 +8,67 @@ import (
 
 type Program []Object
 
+type parser struct {
+	program Program
+	tokens  []Token
+	skip    int
+}
+
 // skipnt - skip some tokens count
 func Parse(tokens []Token) (o *Object, skipnt int) {
-	if len(tokens) == 0 {
+	p := parser{
+		tokens: tokens,
+		skip:   -1,
+	}
+	return p.parse()
+}
+
+func (p *parser) add(object ObjectType, content interface{}, token Token) {
+	p.program = append(p.program, Object{
+		Type:    object,
+		Content: content,
+		x:       token.x,
+		y:       token.y,
+	})
+}
+
+// skipnt - skip some tokens count
+func (p *parser) parse() (o *Object, skipnt int) {
+	if len(p.tokens) == 0 {
 		return nil, 0
 	}
-	var (
-		program Program
-		skip    = -1
-	)
-	if !tokens[0].compare(Token{
+	if !p.tokens[0].compare(Token{
 		Type:    LPAREN_T,
 		Content: "(",
-		x:       0,
-		y:       0,
 	}) {
-		parserErr(tokens[0], errors.New("should be ("))
+		parserErr(p.tokens[0], errors.New("should be ("))
 	}
-	for n, t := range tokens[1:] {
-		if n <= skip {
+	for n, t := range p.tokens[1:] {
+		if n <= p.skip {
 			continue
 		}
 		switch t.Type {
 		case NUM_T:
 			content, _ := strconv.Atoi(t.Content)
-			program = append(program, Object{
-				Type:    NUM_O,
-				Content: content,
-				x:       t.x,
-				y:       t.y,
-			})
+			p.add(NUM_O, content, t)
 		case NAME_T:
-			program = append(program, Object{
-				Type:    NAME_O,
-				Content: t.Content,
-				x:       t.x,
-				y:       t.y,
-			})
+			p.add(NAME_O, t.Content, t)
 		case STRING_T:
-			program = append(program, Object{
-				Type:    STRING_O,
-				Content: t.Content,
-				x:       t.x,
-				y:       t.y,
-			})
+			p.add(STRING_O, t.Content, t)
 		case LPAREN_T:
-			subList, skipnt := Parse(tokens[n+1:])
-			skip = skipnt + n + 1
-			program = append(program, *subList)
+			subList, skipnt := Parse(p.tokens[n+1:])
+			p.skip = skipnt + n + 1
+			p.program = append(p.program, *subList)
 		case RPAREN_T:
 			return &Object{
 				Type:    LIST_O,
-				Content: program,
-				x:       0,
-				y:       0,
+				Content: p.program,
 			}, n
 		}
 	}
 	return &Object{
 		Type:    LIST_O,
-		Content: program,
-		x:       0,
-		y:       0,
+		Content: p.program,
 	}, 0
 }
 

@@ -25,15 +25,11 @@ type lexer struct {
 func Scan(code string) []Token {
 	l := lexer{
 		code: code,
-		span: struct {
-			x int
-			y int
-		}{0, 0},
 	}
 	return l.scan()
 }
 
-func (l *lexer) push(token int, content string) {
+func (l *lexer) add(token TokenType, content string) {
 	l.tokens = append(l.tokens, Token{
 		Type:    token,
 		Content: content,
@@ -42,16 +38,21 @@ func (l *lexer) push(token int, content string) {
 	})
 }
 
-func (l *lexer) take(token, n, n2 int, p, pErr func(c rune) bool, err error) {
+func (l *lexer) take(token TokenType, p, pErr func(c rune) bool) {
+	l.takeStr(TokenType(token), 0, 0, p, pErr, nil)
+}
+
+// left and right boundaries are needed to scan quotes
+func (l *lexer) takeStr(token TokenType, left, right int, p, pErr func(c rune) bool, err error) {
 	content := ""
-	for n, c := range l.code[l.idx+n2:] {
+	for i, c := range l.code[l.idx+right:] {
 		switch {
 		case p(c):
 			goto cont // break dont work here 🤔
 		case pErr(c):
 			lexerErr(err)
 			if Repl {
-				l.code = l.code[n+l.idx+n2:]
+				l.code = l.code[i+l.idx+right:]
 				l.idx += 1
 				continue
 			}
@@ -60,10 +61,10 @@ func (l *lexer) take(token, n, n2 int, p, pErr func(c rune) bool, err error) {
 		}
 	}
 cont:
-	l.code = l.code[len(content)+l.idx+n:]
+	l.code = l.code[len(content)+l.idx+left:]
 	l.idx = -1
-	l.push(token, content)
-	l.span.x += len(content) + n - 1
+	l.add(TokenType(token), content)
+	l.span.x += len(content) + left - 1
 }
 
 func (l *lexer) scan() []Token {
@@ -72,11 +73,11 @@ func (l *lexer) scan() []Token {
 	for l.idx < len(l.code) {
 		switch c := l.code[l.idx]; c {
 		case '(', '[':
-			l.push(LPAREN_T, "(")
+			l.add(LPAREN_T, "(")
 		case ')', ']':
-			l.push(RPAREN_T, ")")
+			l.add(RPAREN_T, ")")
 		case '"':
-			l.take(STRING_T, 2, 1,
+			l.takeStr(STRING_T, 2, 1,
 				func(c rune) bool { return c == '"' },
 				func(c rune) bool { return c == '\n' },
 				errors.New("dangling \""))
@@ -89,9 +90,9 @@ func (l *lexer) scan() []Token {
 					l.idx++
 				}
 			} else {
-				l.take(NAME_T, 0, 0,
+				l.take(NAME_T,
 					func(c rune) bool { return !(isLetter(c) || strings.Contains(symbols, string(c)) || unicode.IsDigit(c)) },
-					func(c rune) bool { return false }, nil)
+					func(c rune) bool { return false })
 			}
 		case '\r', '\t', ' ':
 			{
@@ -102,13 +103,13 @@ func (l *lexer) scan() []Token {
 		default:
 			switch {
 			case isLetter(rune(c)) || strings.Contains(symbols, string(c)):
-				l.take(NAME_T, 0, 0,
+				l.take(NAME_T,
 					func(c rune) bool { return !(isLetter(c) || strings.Contains(symbols, string(c)) || unicode.IsDigit(c)) },
-					func(c rune) bool { return false }, nil)
+					func(c rune) bool { return false })
 			case unicode.IsDigit(rune(c)):
-				l.take(NUM_T, 0, 0,
+				l.take(NUM_T,
 					func(c rune) bool { return !unicode.IsDigit(c) },
-					func(c rune) bool { return false }, nil)
+					func(c rune) bool { return false })
 			default:
 				lexerErr(errors.New("unknown symbol \"" + string(c) + "\""))
 			}

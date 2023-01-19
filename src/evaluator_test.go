@@ -19,16 +19,12 @@ func TestEval(t *testing.T) {
 				Type:    NUM_O,
 				Content: 1,
 				x:       1,
-				y:       0,
 			},
 			Object{
 				Type:    NUM_O,
 				Content: 2,
 				x:       3,
-				y:       0,
 			},
 		},
-		x: 0,
-		y: 0,
 	}, eval)
 }
