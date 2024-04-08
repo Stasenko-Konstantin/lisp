@@ -44,8 +44,6 @@ func (t Token) ToStr() string {
 func (t Token) compare(that Token) bool {
 	if t.Type != that.Type {
 		return false
-	} else if t.Content != that.Content {
-		return false
 	}
-	return true
+	return t.Content == that.Content
 }
