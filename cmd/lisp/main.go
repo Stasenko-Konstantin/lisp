@@ -78,6 +78,12 @@ func fileErr(err error) error {
 }
 
 func repl() {
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			repl()
+		}
+	}()
 	src.Repl = true
 	reader := bufio.NewReader(os.Stdin)
 	for {

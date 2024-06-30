@@ -4,7 +4,7 @@ simple lisp from scratch in ± 800 lines of code (including some tests)
 ```haskell
 git clone https://github.com/Stasenko-Konstantin/lisp
 cd lisp
-go build lisp.go
+go build cmd/lisp/main.go
 
 usage: ./lisp [*.scm] [arg] where arg:
         --help   -- prints the help
