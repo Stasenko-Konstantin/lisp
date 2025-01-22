@@ -5,7 +5,7 @@ simple lisp from scratch in ± 800 lines of code (including some tests)
 ## Build & Run
 ### Go
 
-```haskell
+```bash
 git clone https://github.com/Stasenko-Konstantin/lisp
 cd lisp/go
 go build -o lisp cmd/lisp/main.go
@@ -18,7 +18,7 @@ usage: ./lisp [*.scm] [arg] where arg:
 
 ### Racket
 
-```haskell
+```bash
 git clone https://github.com/Stasenko-Konstantin/lisp
 cd lisp/racket
 raco exe -o lisp main.rkt
