@@ -20,8 +20,8 @@ type Token struct {
 	y       int
 }
 
-// ToStr - pretty printer for tokens
-func (t Token) ToStr() string {
+// String - pretty printer for tokens
+func (t Token) String() string {
 	str := ""
 	switch t.Type {
 	case NUM_T:
@@ -41,7 +41,7 @@ func (t Token) ToStr() string {
 	return str
 }
 
-func (t Token) compare(that Token) bool {
+func (t Token) eq(that Token) bool {
 	if t.Type != that.Type {
 		return false
 	}

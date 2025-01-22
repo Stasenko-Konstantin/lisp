@@ -27,11 +27,11 @@ type Object struct {
 }
 
 // GetContent - pretty printer for evaluated objects
-func (t *Object) GetContent(list bool) string {
-	switch t.Content.(type) {
+func (o *Object) GetContent(list bool) string {
+	switch o.Content.(type) {
 	case Program:
 		r := ""
-		for _, o := range t.Content.(Program) {
+		for _, o := range o.Content.(Program) {
 			r += o.GetContent(true) + " "
 		}
 		if list {
@@ -39,30 +39,30 @@ func (t *Object) GetContent(list bool) string {
 		}
 		return r
 	case *Object:
-		if t.Content.(*Object) == nil {
+		if o.Content.(*Object) == nil {
 			return ""
 		}
-		switch t.Content.(*Object).Type {
+		switch o.Content.(*Object).Type {
 		case LIST_O:
 			r := "( "
-			for _, o := range t.Content.(*Object).Content.(Program) {
+			for _, o := range o.Content.(*Object).Content.(Program) {
 				r += o.GetContent(true) + " "
 			}
 			return r + ")"
 		}
-		return t.Content.(*Object).GetContent(false)
+		return o.Content.(*Object).GetContent(false)
 	case int:
-		return strconv.Itoa(t.Content.(int))
+		return strconv.Itoa(o.Content.(int))
 	case string:
-		return t.Content.(string)
+		return o.Content.(string)
 	}
-	return t.ToStr("")
+	return o.AstStr("")
 }
 
-// ToStr - pretty printer for ast
-func (t Object) ToStr(tab string) string {
+// AstStr - pretty printer for ast
+func (o *Object) AstStr(tab string) string {
 	str := tab
-	switch t.Type {
+	switch o.Type {
 	case VOID_O:
 		str += "type = VOID_O, "
 	case NUM_O:
@@ -79,21 +79,21 @@ func (t Object) ToStr(tab string) string {
 		str += "type = BUILTIN_O, "
 	}
 	var content interface{}
-	switch t.Content.(type) {
+	switch o.Content.(type) {
 	case string, int:
-		content = t.Content
+		content = o.Content
 	case Program:
 		var r string
-		for _, o := range t.Content.(Program) {
-			r += o.ToStr(tab + "\t")
+		for _, o := range o.Content.(Program) {
+			r += o.AstStr(tab + "\t")
 		}
 		content = r
 	default:
-		content = t.Content.(*Object).ToStr("\t")
+		content = o.Content.(*Object).AstStr("\t")
 	}
 	str += fmt.Sprintf("content = %v, ", content)
-	str += "x = " + strconv.Itoa(t.x) + ", "
-	str += "y = " + strconv.Itoa(t.y) + ";\n"
+	str += "x = " + strconv.Itoa(o.x) + ", "
+	str += "y = " + strconv.Itoa(o.y) + ";\n"
 	var r string
 	for _, l := range strings.Split(str, "\n") {
 		if l != "" {
@@ -101,6 +101,10 @@ func (t Object) ToStr(tab string) string {
 		}
 	}
 	return r
+}
+
+func (o *Object) String() string {
+	return o.AstStr("")
 }
 
 type lambda struct {

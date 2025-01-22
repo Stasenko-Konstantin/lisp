@@ -37,7 +37,7 @@ func (p *parser) parse() (o *Object, skipnt int) {
 	if len(p.tokens) == 0 {
 		return nil, 0
 	}
-	if !p.tokens[0].compare(Token{
+	if !p.tokens[0].eq(Token{
 		Type:    LPAREN_T,
 		Content: "(",
 	}) {

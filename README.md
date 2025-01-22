@@ -1,16 +1,35 @@
 # lisp
 desing is very human. very easy to use  
 simple lisp from scratch in ± 800 lines of code (including some tests)
+
+## Build & Run
+### Go
+
 ```haskell
 git clone https://github.com/Stasenko-Konstantin/lisp
-cd lisp
-go build cmd/lisp/main.go
+cd lisp/go
+go build -o lisp cmd/lisp/main.go
 
 usage: ./lisp [*.scm] [arg] where arg:
         --help   -- prints the help
         --past   -- prints intermediate 
         
 ```
+
+### Racket
+
+```haskell
+git clone https://github.com/Stasenko-Konstantin/lisp
+cd lisp/racket
+raco exe -o lisp main.rkt
+
+usage: ./lisp [*.scm] [arg] where arg:
+        --help   -- prints the help
+        --past   -- prints intermediate 
+```
+
+## Usage
+
 ```haskell
 ./lisp
 <<< :h

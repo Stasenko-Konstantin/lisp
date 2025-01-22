@@ -1,2 +1,5 @@
 .idea
 lisp
+notes.txt
+racket/compiled
+racket/*.*~
