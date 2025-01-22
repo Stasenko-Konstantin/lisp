@@ -16,7 +16,7 @@ usage: ./lisp [*.scm] [arg] where arg:
         
 ```
 
-### Racket
+### Racket (WIP)
 
 ```bash
 git clone https://github.com/Stasenko-Konstantin/lisp
