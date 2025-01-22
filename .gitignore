@@ -1,5 +1,5 @@
 .idea
-lisp
-notes.txt
-racket/compiled
-racket/*.*~
+/lisp
+/notes.txt
+/racket/compiled
+/racket/*.*~
