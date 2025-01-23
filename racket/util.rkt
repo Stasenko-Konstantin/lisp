@@ -2,5 +2,5 @@
 
 (provide concat-strings)
 
-(define (concat-strings lst)
+(define (concat-strings . lst)
   (string-join lst ""))

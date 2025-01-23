@@ -5,14 +5,14 @@
 (define out ">>> ")
 (define in  "<<< ")
 
-(define usage (concat-strings (list "usage:\tracket main.rkt [*.scm] [arg] where arg:\n"
-                               "\t--help \t -- prints the help\n"
-                               "\t--past \t -- prints intermediate ast")))
+(define usage (concat-strings "usage:\tracket main.rkt [*.scm] [arg] where arg:\n"
+                              "\t--help \t -- prints the help\n"
+                              "\t--past \t -- prints intermediate ast"))
 
-(define help  (concat-strings (list out ":l, :load *.scm \t -- evaluate file\n"
-                               out ":h, :help \t\t -- prints the help\n"
-                               out ":p, :past \t\t -- prints intermediate ast\n"
-                               out ":q, :quit \t\t -- program exit")))
+(define help  (concat-strings out ":l, :load *.scm \t -- evaluate file\n"
+                              out ":h, :help \t\t -- prints the help\n"
+                              out ":p, :past \t\t -- prints intermediate ast\n"
+                              out ":q, :quit \t\t -- program exit"))
 
 (define print-ast #f)
 ;; (define env nil)
@@ -28,7 +28,7 @@
     (begin
       (unless (string=? ".scm" ext) (error "its not *.scm"))
       (close-input-port in)
-      (eval (concat-strings (list "(" file ")")) #:need-eval #t))))
+      (eval (concat-strings "(" file ")") #:need-eval #t))))
 
 (define (repl)
   (displayln "todo repl"))
