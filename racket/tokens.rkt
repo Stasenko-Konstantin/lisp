@@ -2,6 +2,8 @@
 
 (require "util.rkt")
 
+(provide (all-defined-out))
+
 (define token-types '(num name string lparen rparen))
 
 (struct token (type content x y) #:mutable)

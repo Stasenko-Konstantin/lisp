@@ -1,6 +1,6 @@
 #lang racket
 
-(provide concat-strings)
+(provide (all-defined-out))
 
 (define (concat-strings . lst)
   (string-join lst ""))

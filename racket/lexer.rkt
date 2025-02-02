@@ -2,12 +2,17 @@
 
 (require "tokens.rkt")
 
+(provide scan)
+
 (define x 0)
 (define y 0)
 (define symbols "\\|/?.><!#@`^~%&*-_+=;")
 
-;; listof token, string, '(int, int), int
-(struct lexer (tokens code span idx) #:mutable)
+;;           '(token) string '(int int) int
+(struct lexer (tokens code     span     idx) #:mutable)
+
+(define (add l ttype content)
+  (set-lexer-tokens! l (cons (lexer-tokens l) (token ttype content))))
 
 (define (scan #:code [code '()] #:lexer [l '()])
   (if (null? code)
@@ -23,10 +28,9 @@
             [(or (char=? c #\return) (char=? c #\tab) (char=? c #\space))
              (void)]
             [(char=? c #\newline)
-             (lexer-span-set! l '(-1, 1))]
+             (set-lexer-span! l '(-1, 1))]
             [(and (char=? c #\-) (char=? (string-ref code (+ i 1)) #\-))
-             (while #t
-                    (if (char=? (string-ref code (+ i 1)) #\newline)
-                        (return)
-                        (set! i (+ i 1))))]
-            [() ()])))))
+             (for ([i (in-naturals)]) #:break (char=? (string-ref code (+ i 1)) #\newline)
+               (set! i (+ i 1)))]
+            ;[() ()]
+            )))))
