@@ -2,6 +2,8 @@
 
 (require "util.rkt")
 
+(provide (all-defined-out))
+
 (define token-types '(num name string lparen rparen))
 
 (struct token (type content x y) #:mutable)
@@ -19,4 +21,13 @@
 (define (token=? t1 t2)
   (if (eq? (token-type t1) (token-type t2))
       (string=? (token-content t1) (token-content t2))
+      #f))
+
+(define (token==? t1 t2)
+  (if (eq? (token-type t1)
+           (token-type t2))
+      (and
+       (string=? (token-content t1) (token-content t2))
+       (=        (token-x       t1) (token-x       t2))
+       (=        (token-y       t1) (token-y       t2)))
       #f))
