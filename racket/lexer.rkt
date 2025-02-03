@@ -15,12 +15,19 @@
   (add-err! (format "lexer error: ~s; x = ~a, y = ~a\n" err x y)))
 
 (define (add l ttype content)
-  (set-lexer-tokens! l (cons (token ttype content 0 0) (lexer-tokens l))))
+  (set-lexer-tokens! l
+                     (cons
+                      (token ttype content
+                             (car (lexer-span l))
+                             (list-ref (lexer-span l) 1))
+                      (lexer-tokens l))))
 
 (define (take-str l ttype left right p p-err err)
   (define content "")
   (begin
-    (for/last ([c (string->list (substring (lexer-code l) (+ (lexer-idx l) right)))]
+    (for/last ([c (string->list (substring
+                                 (lexer-code l)
+                                 (+ (lexer-idx l) right)))]
                [i (in-naturals)])
       #:break (p c)
       (cond
@@ -40,7 +47,7 @@
      (list (- (+
                (string-length content)
                (car (lexer-span l))) 1)
-           (cdr (lexer-span l))))))
+           (list-ref (lexer-span l) 1)))))
 
 (define (take l ttype p p-err)
   (take-str l ttype 0 0 p p-err '()))
@@ -62,8 +69,10 @@
               [(or (char=? c #\return) (char=? c #\tab) (char=? c #\space))
                (void)]
               [(char=? c #\newline)
-               (set-lexer-span! l '(-1, 1))]
-              [(and (char=? c #\-) (char=? (string-ref (lexer-code l) (+ (lexer-idx l) 1)) #\-))
+               (set-lexer-span! l '(-1 1))]
+              [(and
+                (char=? c #\-)
+                (char=? (string-ref (lexer-code l) (+ (lexer-idx l) 1)) #\-))
                (for ([i (in-naturals)])
                  #:break (char=? (string-ref (lexer-code l) (+ i 1)) #\newline)
                  (set! i (+ i 1)))]
@@ -91,6 +100,6 @@
                      (lambda (c) (not (char-numeric? c)))
                      (lambda (c) #f))])
             (set-lexer-span! l
-             (list (- (+ (car (lexer-span l))) 1) (cdr (lexer-span l))))
+             (list (+ (car (lexer-span l)) 1) (list-ref (lexer-span l) 1)))
             (set-lexer-idx! l (+ (lexer-idx l) 1))))
         (reverse (lexer-tokens l)))))
