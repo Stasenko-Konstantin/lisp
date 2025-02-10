@@ -3,7 +3,6 @@ desing is very human. very easy to use
 simple lisp from scratch in ± 800 lines of code (including some tests)
 
 ## Build & Run
-### Go
 
 ```bash
 git clone https://github.com/Stasenko-Konstantin/lisp
@@ -14,18 +13,6 @@ usage: ./lisp [*.scm] [arg] where arg:
         --help   -- prints the help
         --past   -- prints intermediate 
         
-```
-
-### Racket (WIP)
-
-```bash
-git clone https://github.com/Stasenko-Konstantin/lisp
-cd lisp/racket
-raco exe -o lisp main.rkt
-
-usage: ./lisp [*.scm] [arg] where arg:
-        --help   -- prints the help
-        --past   -- prints intermediate 
 ```
 
 ## Usage
