@@ -6,7 +6,7 @@ simple lisp from scratch in ± 800 lines of code (including some tests)
 
 ```bash
 git clone https://github.com/Stasenko-Konstantin/lisp
-cd lisp/go
+cd lisp
 go build -o lisp cmd/lisp/main.go
 
 usage: ./lisp [*.scm] [arg] where arg:
