@@ -1,5 +1,5 @@
 # lisp
-desing is very human. very easy to use  
+design is very human. very easy to use  
 simple lisp from scratch in ± 800 lines of code (including some tests)
 
 ## Build & Run
